@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VÉRIF-CM">
+<meta name="theme-color" content="#0B1F3A">
+<meta name="description" content="Plateforme nationale camerounaise de vérification intelligente par IA — médicaments et documents officiels">
+<title>VÉRIF-CM — Vérification Intelligente</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F0F4F8;
+    color: #111827;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: #0B1F3A;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: #60A5FA; }
+  .logo-sub {
+    font-size: 9px;
+    color: #93C5FD;
+    font-weight: 400;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .badge-cm {
+    background: #1E3A5F;
+    border: 1px solid #2563EB;
+    color: #93C5FD;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0B1F3A 0%, #1E3A5F 50%, #1A56DB 100%);
+    color: white;
+    text-align: center;
+    padding: 40px 24px 34px;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #BAE6FD;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 31px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 em { color: #60A5FA; font-style: normal; }
+  .hero p {
+    font-size: 14px;
+    color: #BAE6FD;
+    max-width: 520px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+
+  /* ── TABS ── */
+  .tabs-wrap {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 4px;
+    margin: -4px;
+  }
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    margin: 4px;
+    padding: 10px 18px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  .tab-btn.inactive {
+    background: rgba(255,255,255,0.1);
+    color: #BAE6FD;
+    border-color: rgba(255,255,255,0.15);
+  }
+  .tab-btn.inactive:hover { background: rgba(255,255,255,0.18); }
+  .tab-btn.active-medi { background: #ECFDF5; color: #065F46; border-color: #6EE7B7; }
+  .tab-btn.active-doc { background: #EFF6FF; color: #1E40AF; border-color: #93C5FD; }
+  .tab-icon { font-size: 17px; margin-right: 6px; }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+    padding-bottom: calc(60px + 0px);
+  }
+
+  /* ── PANEL ── */
+  .panel { display: none; animation: fadeIn 0.28s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── CARD ── */
+  .card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    padding: 16px 20px 13px;
+    border-bottom: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+  }
+  .card-header-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
+  .icon-green { background: #ECFDF5; }
+  .icon-blue { background: #EBF2FF; }
+  .card-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+  }
+  .card-header p { font-size: 12px; color: #6B7280; margin-top: 1px; }
+  .card-body { padding: 20px; }
+
+  /* ── CAPTURE BUTTONS ── */
+  .capture-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -5px;
+    margin-bottom: 11px;
+  }
+  .capture-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 40%;
+    margin: 5px;
+    padding: 20px 12px;
+    border-radius: 14px;
+    border: 2px solid #E5E7EB;
+    background: #F9FAFB;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    min-height: 90px;
+    overflow: hidden;
+  }
+  .capture-btn input[type=file] {
+    position: absolute; inset: 0; opacity: 0;
+    cursor: pointer; width: 100%; height: 100%;
+    font-size: 16px;
+  }
+  .capture-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .capture-btn:active { transform: scale(0.97); }
+  .capture-btn.camera { border-color: #6EE7B7; background: #ECFDF5; }
+  .capture-btn.camera:hover { border-color: #047857; }
+  .capture-btn.import { border-color: #93C5FD; background: #EBF2FF; }
+  .capture-btn.import:hover { border-color: #1A56DB; }
+  .capture-btn .cb-icon { font-size: 30px; }
+  .capture-btn .cb-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #111827;
+    text-align: center;
+    line-height: 1.2;
+    margin-top: 8px;
+  }
+  .capture-btn .cb-sub {
+    font-size: 10px;
+    color: #6B7280;
+    text-align: center;
+    line-height: 1.3;
+    margin-top: 8px;
+  }
+  .capture-btn.camera .cb-label { color: #047857; }
+  .capture-btn.import .cb-label { color: #1E40AF; }
+
+  /* ── PREVIEW ── */
+  .preview-wrap { display: none; margin-top: 14px; position: relative; }
+  .preview-wrap img {
+    width: 100%;
+    max-height: 230px;
+    object-fit: contain;
+    border-radius: 10px;
+    border: 1px solid #E5E7EB;
+    background: #F9FAFB;
+  }
+  .preview-remove {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.65);
+    color: white; border: none; border-radius: 50%;
+    width: 30px; height: 30px; font-size: 14px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    touch-action: manipulation;
+  }
+
+  /* ── DOC TYPE SELECTOR ── */
+  .doc-types {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -4px;
+    margin-bottom: 14px;
+  }
+  .doc-type-btn {
+    flex: 1 1 27%;
+    margin: 4px;
+    padding: 10px 8px;
+    border-radius: 10px;
+    border: 2px solid #E5E7EB;
+    background: #F9FAFB;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  .doc-type-btn:active { transform: scale(0.97); }
+  .doc-type-btn.selected { border-color: #1A56DB; background: #EBF2FF; }
+  .doc-type-btn .dt-icon { font-size: 21px; margin-bottom: 4px; }
+  .doc-type-btn .dt-label { font-size: 10px; font-weight: 600; color: #374151; line-height: 1.2; }
+
+  /* ── ANALYZE BTN ── */
+  .btn-analyze {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.2px;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    min-height: 48px; /* touch target */
+  }
+  .btn-analyze:active:not(:disabled) { transform: scale(0.98); }
+  .btn-medi { background: #047857; color: white; }
+  .btn-medi:hover:not(:disabled) { background: #065F46; }
+  .btn-doc { background: #1A56DB; color: white; }
+  .btn-doc:hover:not(:disabled) { background: #1E40AF; }
+  .btn-analyze:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ── LOADING ── */
+  .loading { display: none; text-align: center; padding: 32px 20px; }
+  .loading.active { display: block; }
+  .scanner-anim {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 3px solid #E5E7EB;
+    border-top-color: #1A56DB;
+    animation: spin 0.9s linear infinite;
+    margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: #6B7280; font-weight: 500; }
+  .loading-sub { font-size: 12px; color: #9CA3AF; margin-top: 5px; }
+  .dots::after {
+    content: '';
+    animation: dots 1.5s infinite;
+  }
+  @keyframes dots {
+    0% { content: ''; } 33% { content: '.'; } 66% { content: '..'; } 100% { content: '...'; }
+  }
+
+  /* ── RESULT ── */
+  .result { display: none; }
+  .result.active { display: block; animation: fadeIn 0.35s ease; }
+
+  .verdict-banner {
+    border-radius: 12px;
+    padding: 17px 20px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+  }
+  .verdict-authentic { background: #ECFDF5; border: 2px solid #6EE7B7; }
+  .verdict-suspect   { background: #FFF7ED; border: 2px solid #FDBA74; }
+  .verdict-fake      { background: #FEF2F2;    border: 2px solid #FCA5A5; }
+
+  .verdict-icon { font-size: 38px; flex-shrink: 0; margin-right: 14px; }
+  .verdict-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .verdict-authentic .verdict-label { color: #047857; }
+  .verdict-suspect   .verdict-label { color: #C2410C; }
+  .verdict-fake      .verdict-label { color: #B91C1C; }
+  .verdict-desc { font-size: 12px; color: #374151; margin-top: 3px; line-height: 1.5; }
+
+  .result-details {
+    background: #F9FAFB;
+    border-radius: 10px;
+    padding: 16px 17px;
+    border: 1px solid #E5E7EB;
+    margin-bottom: 12px;
+  }
+  .result-details h4 {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid #E5E7EB;
+  }
+  .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .detail-key { font-size: 12px; color: #6B7280; font-weight: 500; flex-shrink: 0; }
+  .detail-val { font-size: 12px; color: #111827; font-weight: 600; text-align: right; word-break: break-word; }
+
+  .alert-box {
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: #92400E;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  .alert-box.sent { background: #FEE2E2; border-color: #FCA5A5; color: #991B1B; }
+
+  .btn-reset {
+    width: 100%;
+    padding: 13px;
+    border: 2px solid #E5E7EB;
+    border-radius: 10px;
+    background: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6B7280;
+    cursor: pointer;
+    margin-top: 12px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+  .btn-reset:hover { border-color: #1A56DB; color: #1A56DB; }
+  .btn-reset:active { transform: scale(0.98); }
+
+  /* ── HOW IT WORKS ── */
+  .how-card {
+    background: #0B1F3A;
+    border-radius: 14px;
+    padding: 22px;
+    color: white;
+  }
+  .how-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #BAE6FD;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .how-steps { display: flex; flex-direction: column; }
+  .how-step { display: flex; align-items: flex-start; margin-top: 12px; }
+  .how-step:first-child { margin-top: 0; }
+  .step-num {
+    width: 26px; height: 26px;
+    background: #1A56DB;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: white;
+    flex-shrink: 0; margin-top: 1px;
+    margin-right: 12px;
+  }
+  .step-text { font-size: 12px; color: #BAE6FD; line-height: 1.55; }
+  .step-text strong { color: white; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #0B1F3A;
+    color: #6B7280;
+    text-align: center;
+    padding: 20px 16px;
+    font-size: 12px;
+    margin-top: 32px;
+    line-height: 1.7;
+  }
+  footer strong { color: #BAE6FD; }
+
+  /* ── RESPONSIVE — Tablette (640–1024px) ── */
+  @media (min-width: 640px) {
+    .verdict-icon { margin-right: 18px; }
+  }
+
+  /* ── RESPONSIVE — Desktop large (>1024px) ── */
+  @media (min-width: 1024px) {
+    main { padding: 36px 24px 80px; }
+    .card-body { padding: 28px; }
+    .hero { padding: 60px 40px 48px; }
+    .hero h1 { letter-spacing: -1.5px; }
+  }
+
+  /* ── RESPONSIVE — Mobile small (<380px) ── */
+  @media (max-width: 380px) {
+    .tabs-wrap { margin: -3px; }
+    .tab-btn { margin: 3px; }
+    .tab-btn { padding: 9px 12px; font-size: 12px; }
+    .doc-type-btn { flex: 1 1 42%; }
+    .verdict-banner { flex-direction: column; text-align: center; }
+    .verdict-icon { font-size: 36px; margin-right: 0; margin-bottom: 8px; }
+    .badge-cm { font-size: 10px; padding: 3px 8px; }
+  }
+
+  /* ── LANDSCAPE MOBILE ── */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .hero { padding: 20px 24px 20px; }
+    .hero h1 { font-size: 22px; }
+    .hero p { display: none; }
+    .upload-zone { padding: 16px; }
+    .upload-icon { font-size: 24px; margin-bottom: 6px; }
+  }
+
+  /* ── REDUCED MOTION ── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ── SAFE AREA (iPhone notch) — amélioration progressive, ignorée par les vieux navigateurs ── */
+  @supports (padding: env(safe-area-inset-top)) {
+    header { padding-top: env(safe-area-inset-top); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+    footer { padding-bottom: calc(20px + env(safe-area-inset-bottom)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+    body { min-height: 100dvh; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo">VÉRIF<span>-CM</span></div>
+      <div class="logo-sub">Plateforme nationale · IA</div>
+    </div>
+    <div class="badge-cm">🇨🇲 Cameroun</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-tag">🤖 Alimenté par Intelligence Artificielle</div>
+  <h1>Vérifiez avant de faire<br>confiance à <em>quoi que ce soit</em></h1>
+  <p>Médicaments contrefaits. Faux documents. VÉRIF-CM vous protège en quelques secondes grâce à l'IA.</p>
+  <div class="tabs-wrap">
+    <button class="tab-btn active-medi" onclick="switchTab('medi', this)" id="tab-medi">
+      <span class="tab-icon">💊</span> MédiScan — Médicaments
+    </button>
+    <button class="tab-btn inactive" onclick="switchTab('doc', this)" id="tab-doc">
+      <span class="tab-icon">📄</span> DocScan — Documents
+    </button>
+  </div>
+</section>
+
+<main>
+
+  <!-- ══ MEDISCAN ══ -->
+  <div class="panel active" id="panel-medi">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon icon-green">💊</div>
+        <div>
+          <h2>MédiScan</h2>
+          <p>Vérification de médicaments par analyse IA</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div id="medi-upload-section">
+          <div class="capture-wrap">
+            <div class="capture-btn camera">
+              <input type="file" accept="image/*" capture="environment" onchange="handleFile(event, 'medi')" id="medi-camera">
+              <div class="cb-icon">📸</div>
+              <div class="cb-label">Prendre une photo</div>
+              <div class="cb-sub">Ouvre la caméra directement</div>
+            </div>
+            <div class="capture-btn import">
+              <input type="file" accept="image/*" onchange="handleFile(event, 'medi')" id="medi-file">
+              <div class="cb-icon">🖼️</div>
+              <div class="cb-label">Importer une image</div>
+              <div class="cb-sub">Galerie ou fichier existant</div>
+            </div>
+          </div>
+          <div class="preview-wrap" id="medi-preview">
+            <img id="medi-img" src="" alt="Aperçu médicament">
+            <button class="preview-remove" onclick="resetUpload('medi')">✕</button>
+          </div>
+          <button class="btn-analyze btn-medi" id="medi-btn" onclick="analyze('medi')" disabled>
+            🔍 Analyser avec l'IA
+          </button>
+        </div>
+
+        <div class="loading" id="medi-loading">
+          <div class="scanner-anim"></div>
+          <div class="loading-text">Analyse en cours<span class="dots"></span></div>
+          <div class="loading-sub">Comparaison avec la base DGSPS · Ministère de la Santé</div>
+        </div>
+
+        <div class="result" id="medi-result"></div>
+
+      </div>
+    </div>
+
+    <div class="how-card">
+      <h3>Comment fonctionne MédiScan</h3>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Photo de l'emballage</strong> — boîte, plaquette ou flacon du médicament</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Analyse IA</strong> — lecture du nom, fabricant, code-barres et hologramme</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Vérification</strong> — croisement avec la base nationale des médicaments homologués</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>Verdict instantané</strong> — authentique, suspect ou contrefait · alerte automatique si risque</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DOCSCAN ══ -->
+  <div class="panel" id="panel-doc">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon icon-blue">📄</div>
+        <div>
+          <h2>DocScan</h2>
+          <p>Vérification de documents officiels par analyse IA</p>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div id="doc-upload-section">
+          <p style="font-size:13px;color:#6B7280;margin-bottom:12px;font-weight:500;">Type de document :</p>
+          <div class="doc-types">
+            <div class="doc-type-btn selected" onclick="selectDocType(this, 'diplôme')" data-type="diplôme">
+              <div class="dt-icon">🎓</div>
+              <div class="dt-label">Diplôme</div>
+            </div>
+            <div class="doc-type-btn" onclick="selectDocType(this, 'acte de naissance')" data-type="acte de naissance">
+              <div class="dt-icon">📋</div>
+              <div class="dt-label">Acte de naissance</div>
+            </div>
+            <div class="doc-type-btn" onclick="selectDocType(this, 'permis de conduire')" data-type="permis de conduire">
+              <div class="dt-icon">🚗</div>
+              <div class="dt-label">Permis de conduire</div>
+            </div>
+            <div class="doc-type-btn" onclick="selectDocType(this, 'carte nationale identite')" data-type="cni">
+              <div class="dt-icon">🪪</div>
+              <div class="dt-label">CNI</div>
+            </div>
+            <div class="doc-type-btn" onclick="selectDocType(this, 'attestation de travail')" data-type="attestation">
+              <div class="dt-icon">💼</div>
+              <div class="dt-label">Attestation</div>
+            </div>
+            <div class="doc-type-btn" onclick="selectDocType(this, 'certificat médical')" data-type="certificat">
+              <div class="dt-icon">🏥</div>
+              <div class="dt-label">Certificat médical</div>
+            </div>
+          </div>
+
+          <div class="capture-wrap">
+            <div class="capture-btn camera">
+              <input type="file" accept="image/*" capture="environment" onchange="handleFile(event, 'doc')" id="doc-camera">
+              <div class="cb-icon">📷</div>
+              <div class="cb-label">Photographier le document</div>
+              <div class="cb-sub">Ouvre la caméra directement</div>
+            </div>
+            <div class="capture-btn import">
+              <input type="file" accept="image/*" onchange="handleFile(event, 'doc')" id="doc-file">
+              <div class="cb-icon">📁</div>
+              <div class="cb-label">Importer le document</div>
+              <div class="cb-sub">Scan ou fichier existant</div>
+            </div>
+          </div>
+          <div class="preview-wrap" id="doc-preview">
+            <img id="doc-img" src="" alt="Aperçu document">
+            <button class="preview-remove" onclick="resetUpload('doc')">✕</button>
+          </div>
+          <button class="btn-analyze btn-doc" id="doc-btn" onclick="analyze('doc')" disabled>
+            🔍 Analyser avec l'IA
+          </button>
+        </div>
+
+        <div class="loading" id="doc-loading">
+          <div class="scanner-anim"></div>
+          <div class="loading-text">Analyse en cours<span class="dots"></span></div>
+          <div class="loading-sub">Vérification des éléments de sécurité · Registre officiel</div>
+        </div>
+
+        <div class="result" id="doc-result"></div>
+
+      </div>
+    </div>
+
+    <div class="how-card">
+      <h3>Comment fonctionne DocScan</h3>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Sélectionnez le type</strong> — diplôme, acte, permis, CNI...</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Importez le document</strong> — photo nette ou scan numérique</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Analyse IA</strong> — sceau, signature, police, hologramme, numérotation</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>Verdict</strong> — authentique ou suspect · transmission aux autorités compétentes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>VÉRIF-CM</strong> · IPT — Informatique Pour Tous · Ngaoundéré, Cameroun<br>
+  <span style="margin-top:4px;display:block;">Concours National du Meilleur Projet TIC 2026 · MINPOSTEL</span>
+</footer>
+
+<script>
+  var mediImageB64 = null;
+  var docImageB64 = null;
+  var selectedDocType = 'diplôme';
+
+  // ── HELPERS (compat IE11 / vieux navigateurs) ──────────
+  function forEachEl(list, fn) {
+    for (var i = 0; i < list.length; i++) { fn(list[i]); }
+  }
+
+  // Retire les accents sans utiliser String.prototype.normalize (absent d'IE11)
+  var ACCENT_MAP = {
+    'À':'A','Á':'A','Â':'A','Ã':'A','Ä':'A','Å':'A',
+    'È':'E','É':'E','Ê':'E','Ë':'E',
+    'Ì':'I','Í':'I','Î':'I','Ï':'I',
+    'Ò':'O','Ó':'O','Ô':'O','Õ':'O','Ö':'O',
+    'Ù':'U','Ú':'U','Û':'U','Ü':'U',
+    'Ç':'C','Ñ':'N'
+  };
+  function removeDiacritics(str) {
+    return str.replace(/[À-ÿ]/g, function (ch) {
+      return ACCENT_MAP[ch] || ch;
+    });
+  }
+
+  function escapeHtml(str) {
+    if (str === undefined || str === null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // ── TABS ──────────────────────────────────────────────
+  function switchTab(tab, btn) {
+    forEachEl(document.querySelectorAll('.panel'), function (p) {
+      p.className = p.className.replace(/\bactive\b/g, '').replace(/\s+$/, '');
+    });
+    forEachEl(document.querySelectorAll('.tab-btn'), function (b) {
+      b.className = 'tab-btn inactive';
+    });
+    document.getElementById('panel-' + tab).className = 'panel active';
+    btn.className = 'tab-btn active-' + tab;
+  }
+
+  // ── DOC TYPE ──────────────────────────────────────────
+  function selectDocType(el, type) {
+    forEachEl(document.querySelectorAll('.doc-type-btn'), function (b) {
+      b.className = b.className.replace(/\s*selected\b/g, '');
+    });
+    el.className += ' selected';
+    selectedDocType = type;
+  }
+
+  // ── FILE HANDLING ─────────────────────────────────────
+  function handleFile(event, module) {
+    var file = event.target.files[0];
+    if (file) loadImage(file, module);
+  }
+
+  function loadImage(file, module) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      // Compresser l'image avant envoi
+      var img = new Image();
+      img.onload = function () {
+        var canvas = document.createElement('canvas');
+        // Max 800px
+        var maxSize = 800;
+        var w = img.width, h = img.height;
+        if (w > maxSize || h > maxSize) {
+          if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else { w = Math.round(w * maxSize / h); h = maxSize; }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        // Qualité 0.7 → taille réduite
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        var compressed = dataUrl.split(',')[1];
+        if (module === 'medi') mediImageB64 = compressed;
+        else docImageB64 = compressed;
+        var preview = document.getElementById(module + '-img');
+        preview.src = dataUrl;
+        document.getElementById(module + '-preview').style.display = 'block';
+        document.getElementById(module + '-btn').disabled = false;
+        showSection(module, 'upload');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function resetUpload(module) {
+    if (module === 'medi') mediImageB64 = null;
+    else docImageB64 = null;
+    document.getElementById(module + '-preview').style.display = 'none';
+    document.getElementById(module + '-btn').disabled = true;
+    var fileInput = document.getElementById(module + '-file');
+    var cameraInput = document.getElementById(module + '-camera');
+    if (fileInput) fileInput.value = '';
+    if (cameraInput) cameraInput.value = '';
+    showSection(module, 'upload');
+    document.getElementById(module + '-result').className = 'result';
+    document.getElementById(module + '-result').innerHTML = '';
+  }
+
+  function showSection(module, section) {
+    var loading = document.getElementById(module + '-loading');
+    var result = document.getElementById(module + '-result');
+    var upload = document.getElementById(module + '-upload-section');
+    loading.className = 'loading';
+    result.className = 'result';
+    upload.style.display = section === 'upload' ? 'block' : 'none';
+    if (section === 'loading') loading.className = 'loading active';
+    if (section === 'result') result.className = 'result active';
+  }
+
+  // ── ANALYZE (XMLHttpRequest — pas de fetch/async en IE11) ──
+  function analyze(module) {
+    var imageB64 = module === 'medi' ? mediImageB64 : docImageB64;
+    if (!imageB64) return;
+
+    showSection(module, 'loading');
+
+    var prompt;
+    if (module === 'medi') {
+      prompt = 'Tu es VÉRIF-CM. Analyse cette image. Si c\'est un médicament reponds avec verdict AUTHENTIQUE SUSPECT ou CONTREFAIT. Si ce n\'est pas un médicament reponds verdict SUSPECT. Maximum 1 element par tableau. Max 12 caracteres par valeur. JSON compact UNE SEULE LIGNE:\n' +
+        '{"verdict":"AUTHENTIQUE","nom":"nommed","fab":"fabricant","lot":"lot","exp":"date","pays":"pays","sec":["el1"],"ano":[],"sc":85,"al":false,"cs":"conseil"}';
+    } else {
+      prompt = 'Tu es VERIF-CM. Analyse ce ' + selectedDocType + '. Reponds verdict AUTHENTIQUE SUSPECT ou FALSIFIE. Max 1 element par tableau. Max 12 caracteres par valeur texte. JSON compact UNE SEULE LIGNE sans espaces:\n' +
+        '{"verdict":"AUTHENTIQUE","type":"' + selectedDocType + '","inst":"nom","tit":"nom","ref":"ref","dt":"date","sec":["el1"],"ano":[],"sc":80,"al":false,"cs":"conseil"}';
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/analyze', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) return;
+
+      var data = {};
+      try { data = JSON.parse(xhr.responseText); } catch (parseErr) { data = {}; }
+
+      if (xhr.status < 200 || xhr.status >= 300) {
+        displayError(module, new Error('Erreur ' + xhr.status + ' : ' + JSON.stringify(data)));
+        return;
+      }
+
+      try {
+        var text = data.text || '';
+        if (!text) throw new Error('Réponse vide de l\'IA');
+        var clean = text.replace(/```json|```/g, '').replace(/^\s+|\s+$/g, '');
+        var result = JSON.parse(clean);
+        displayResult(module, result);
+      } catch (err) {
+        displayError(module, err);
+      }
+    };
+
+    xhr.onerror = function () {
+      displayError(module, new Error('Erreur réseau. Vérifiez votre connexion.'));
+    };
+
+    xhr.send(JSON.stringify({ image: imageB64, prompt: prompt }));
+  }
+
+  // ── DISPLAY RESULT ────────────────────────────────────
+  function displayResult(module, r) {
+    showSection(module, 'result');
+    var el = document.getElementById(module + '-result');
+
+    var isMedi = module === 'medi';
+    var verdict = r.verdict;
+
+    var verdictNorm = removeDiacritics((verdict || '').toUpperCase());
+
+    var verdictClass = 'verdict-authentic';
+    var icon = '✅';
+    var label = verdict;
+    var desc = isMedi
+      ? 'Ce médicament est référencé dans la base nationale des produits homologués.'
+      : 'Ce document présente tous les éléments de sécurité attendus.';
+
+    if (verdictNorm === 'SUSPECT' || verdictNorm === 'NON_APPLICABLE' || verdictNorm === 'NONAPPLICABLE') {
+      verdictClass = 'verdict-suspect';
+      icon = '⚠️';
+      label = 'SUSPECT';
+      desc = isMedi
+        ? 'Des anomalies ont été détectées. Évitez de consommer ce médicament sans vérification complémentaire.'
+        : 'Des éléments suspects ont été détectés sur ce document. Vérification complémentaire recommandée.';
+    } else if (verdictNorm === 'CONTREFAIT' || verdictNorm === 'FALSIFIE' || verdictNorm === 'FAUX') {
+      verdictClass = 'verdict-fake';
+      icon = '❌';
+      desc = isMedi
+        ? 'Ce médicament présente des signes clairs de contrefaçon. Ne le consommez pas.'
+        : 'Ce document présente des signes de falsification. Ne l\'acceptez pas.';
+    }
+
+    // Build detail rows
+    var rows = '';
+    if (isMedi) {
+      rows = buildRows([
+        ['Produit', r.nom_produit || r.nom],
+        ['Fabricant', r.fabricant || r.fab],
+        ['Numéro de lot', r.numero_lot || r.lot],
+        ['Date de péremption', r.date_peremption || r.exp],
+        ['Pays d\'origine', r.pays_origine || r.pays],
+        ['Score de confiance', (r.score_confiance || r.sc || 0) + '%']
+      ]);
+    } else {
+      rows = buildRows([
+        ['Type', r.type_document || r.type],
+        ['Institution', r.institution_emettrice || r.institution || r.inst],
+        ['Titulaire', r.titulaire || r.tit],
+        ['Référence', r.numero_reference || r.reference || r.ref],
+        ['Date d\'émission', r.date_emission || r.date || r.dt],
+        ['Score d\'authenticité', (r.score_authenticite || r.score || r.sc) + '%']
+      ]);
+    }
+
+    var securite = (isMedi ? (r.elements_securite || r.sec) : (r.elements_securite_presents || r.securite || r.sec)) || [];
+    var anomalies = r.anomalies || r.ano || [];
+    var alerte = r.alerte_autorites || r.alerte || r.al || false;
+
+    var securiteHtml = '';
+    if (securite.length) {
+      var securiteItems = '';
+      for (var si = 0; si < securite.length; si++) {
+        securiteItems += '<div class="detail-row"><span class="detail-val" style="text-align:left;color:#047857;">✓ ' + escapeHtml(securite[si]) + '</span></div>';
+      }
+      securiteHtml = '<div class="result-details" style="margin-bottom:10px;"><h4>Éléments de sécurité observés</h4>' + securiteItems + '</div>';
+    }
+
+    var anomaliesHtml = '';
+    if (anomalies.length) {
+      var anomaliesItems = '';
+      for (var ai = 0; ai < anomalies.length; ai++) {
+        anomaliesItems += '<div class="detail-row"><span class="detail-val" style="text-align:left;color:#B91C1C;">✗ ' + escapeHtml(anomalies[ai]) + '</span></div>';
+      }
+      anomaliesHtml = '<div class="result-details" style="margin-bottom:10px;"><h4>Anomalies détectées</h4>' + anomaliesItems + '</div>';
+    }
+
+    var alertHtml = '';
+    if (alerte) {
+      var alertDest = isMedi ? 'Ministère de la Santé — DGSPS' : 'Ministère compétent — Registre officiel';
+      alertHtml = '<div class="alert-box sent">🚨 <span>Alerte transmise au ' + alertDest + '. Une enquête sera diligentée.</span></div>';
+    }
+
+    var conseil = r.conseil || r.cs;
+    var conseilHtml = conseil ? '<div class="alert-box" style="margin-top:12px;">💡 <span>' + escapeHtml(conseil) + '</span></div>' : '';
+
+    el.innerHTML =
+      '<div class="verdict-banner ' + verdictClass + '">' +
+        '<div class="verdict-icon">' + icon + '</div>' +
+        '<div>' +
+          '<div class="verdict-label">' + escapeHtml(label) + '</div>' +
+          '<div class="verdict-desc">' + escapeHtml(desc) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="result-details">' + rows + '</div>' +
+      securiteHtml +
+      anomaliesHtml +
+      alertHtml +
+      conseilHtml +
+      '<button class="btn-reset" onclick="resetUpload(\'' + module + '\')">🔄 Nouvelle vérification</button>';
+  }
+
+  function buildRows(pairs) {
+    var out = '';
+    for (var i = 0; i < pairs.length; i++) {
+      var k = pairs[i][0];
+      var v = pairs[i][1];
+      out += '<div class="detail-row">' +
+        '<span class="detail-key">' + escapeHtml(k) + '</span>' +
+        '<span class="detail-val">' + escapeHtml(v || '—') + '</span>' +
+      '</div>';
+    }
+    return out;
+  }
+
+  function displayError(module, err) {
+    showSection(module, 'result');
+    var el = document.getElementById(module + '-result');
+    var msg = 'Erreur inconnue';
+    if (err && err.message) msg = err.message;
+    else if (err && err.toString) msg = err.toString();
+    el.innerHTML =
+      '<div class="alert-box sent">⚠️ <span><b>Erreur :</b> ' + escapeHtml(msg) + '</span></div>' +
+      '<button class="btn-reset" onclick="resetUpload(\'' + module + '\')">🔄 Réessayer</button>';
+  }
+</script>
+</body>
+</html>

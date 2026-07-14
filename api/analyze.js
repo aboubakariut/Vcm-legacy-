@@ -74,7 +74,7 @@ module.exports = async function handler(req, res) {
       try {
         const fixed = text
           .replace(/'/g, '"')
-          .replace(/(\w+)":/g, '"$1":')
+          .replace(/(?<!")(\w+)":/g, '"$1":')
           .replace(/:\s*"([^"]*)"([^,}\]])/g, ': "$1"$2');
         resultJson = JSON.parse(fixed);
       } catch (e2) {
